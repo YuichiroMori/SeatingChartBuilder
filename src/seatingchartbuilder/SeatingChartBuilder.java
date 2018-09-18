@@ -8,84 +8,85 @@ public class SeatingChartBuilder {
     public static void main(String[] args) throws Exception{
         
         Scanner input=new Scanner(new File("input.txt"));
-        String output="";
-        BestSeat best;
+        int checker=0;
+        int orderIndex=0;
+        ArrayList<Integer> orderList=new ArrayList<>();
+        Map<Integer,String> seat=new TreeMap<>();
         
         while(input.hasNext()){
             
-        String what=input.next();
-        
-            if(what.equals("Teacher:")){
-                String last=input.next();
-                String first=input.next();
-                String divider="";
-                System.out.println(last+" "+first);
+            String next=input.nextLine();
+            
+            if(next.contains("Teacher")){
                 
-                for(int x=0;x<last.length()+first.length()+1;x++){
+                String teacher=next.replace("Teacher:", "").trim();
+                String divider="";
+                
+                for(int x=0;x<teacher.length();x++){
+                    
                     divider+="=";
                 }
+                
+                System.out.println(teacher);
                 System.out.println(divider);
-    }
-            else if(what.equals("Order:")){
+            }
+            
+            
+            else if(next.contains("Order:")){
                 
-                Scanner loop=new Scanner(input.nextLine());
-                String order="";
+                String order=next.replace("Order:","").trim();
+                String[] orders=order.split(", ");
+                String output="";
                 
-                while(loop.hasNext()){
-                    order+=loop.next();
+                for(int x=0;x<orders.length;x++){
+                    
+                    output+=orders[x]+" ";
                 }
                 
-                String[] orderlist=order.split(",");
+                BestSeat best=new BestSeat(output);
+                int index=0;
                 
-                for(int x=0;x<orderlist.length;x++){
-                    output=output+orderlist[x]+" ";
+                while(best.hasNext()){
+                    
+                    orderList.add(index,best.next());
+                    index++;
+                    
                 }
             }
-            else if(what.equals("Class:")){
-                String period=input.next();
-                String period1=input.next();
-                System.out.println(period+" "+period1);
+            
+            else if(next.contains("Class:")&&checker==0){
+                
+                String period=next.replace("Class:","").trim();
+                System.out.println(period);
+                
             }
+            
+            
+            else if(next.contains("Class:")&&checker==1){
+                
+                
+                orderIndex=0;
+                
+                for(int x=1;x<orderList.size()+1;x++){
+                    
+                    String name=seat.get(x);
+                    System.out.println(name);
+                }
+                
+                seat.clear();
+                
+                String period=next.replace("Class:","").trim();
+                System.out.println(period);
+                
+            }
+            
             else{
                 
-                ArrayList<String> studentList=new ArrayList<String>();
-                 
-                while(input.hasNext()){
-                    
-                    if(what.equals("Class:")){
-                        
-                        for(int x=0;x<studentList.size();x++){
-                            System.out.println(studentList.get(x));
-                        }
-                        
-                        studentList.clear();
-                        String period=input.next();
-                        String period1=input.next();
-                        System.out.println(period+" "+period1);                        
-                    }
-                    else{
-                        studentList=new ArrayList<String>();
-                        String firstName=what;
-                        String lastName=input.next();
-                        String fullName=firstName+lastName;
-                        best=new BestSeat(output);
-                        int bestSeat=best.next();
-                        
-                        
-                        if(studentList.size()>0){
-                        studentList.add(bestSeat,fullName);
-                        }
-                        else{
-                            studentList.add(fullName);
-                        }
-                        what=input.next();
-                    }
-                }
+                seat.put(orderList.get(orderIndex), next);
+                orderIndex++;
+                checker=1;
+                
             }
         }
-    }
-    
-    //Make arraylist of students
-    //get bestSeat with next() and write into the file by studentList[next()];
-    
+    } 
 }
