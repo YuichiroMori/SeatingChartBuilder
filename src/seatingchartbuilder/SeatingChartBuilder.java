@@ -11,6 +11,7 @@ public class SeatingChartBuilder {
         int checker=0;
         int orderIndex=0;
         ArrayList<Integer> orderList=new ArrayList<>();
+        ArrayList<String> studentList=new ArrayList<>();
         Map<Integer,String> seat=new TreeMap<>();
         
         while(input.hasNext()){
@@ -44,12 +45,10 @@ public class SeatingChartBuilder {
                 }
                 
                 BestSeat best=new BestSeat(output);
-                int index=0;
                 
                 while(best.hasNext()){
                     
-                    orderList.add(index,best.next());
-                    index++;
+                    orderList.add(best.next());
                     
                 }
             }
@@ -64,16 +63,30 @@ public class SeatingChartBuilder {
             
             else if(next.contains("Class:")&&checker==1){
                 
-                
+                Collections.shuffle(studentList);
                 orderIndex=0;
+                
+                for(int x=0;x<studentList.size();x++){
+                    seat.put(orderList.get(orderIndex),studentList.get(x));
+                    orderIndex++;
+                }
                 
                 for(int x=1;x<orderList.size()+1;x++){
                     
-                    String name=seat.get(x);
+                    if(x<10){
+                    String seatNumber="0"+Integer.toString(x)+" ";
+                    String name=seatNumber+seat.get(x);
                     System.out.println(name);
+                    }
+                    else{
+                        String seatNumber=Integer.toString(x)+" ";
+                        String name=seat.get(x);
+                        System.out.println(seatNumber+name);
+                    }
                 }
                 
                 seat.clear();
+                studentList.removeAll(studentList);
                 
                 String period=next.replace("Class:","").trim();
                 System.out.println(period);
@@ -82,11 +95,39 @@ public class SeatingChartBuilder {
             
             else{
                 
-                seat.put(orderList.get(orderIndex), next);
-                orderIndex++;
+                studentList.add(next);
                 checker=1;
                 
             }
         }
+        
+                    
+        for(int x=1;x<orderList.size()+1;x++){
+            
+                Collections.shuffle(studentList);
+                orderIndex=0;
+                
+                for(int y=0;y<studentList.size();y++){
+                    seat.put(orderList.get(orderIndex),studentList.get(y));
+                    orderIndex++;
+                }
+                    
+            if(seat.get(x)!=null){
+                    if(x<10){
+                    String seatNumber="0"+Integer.toString(x)+" ";
+                    String name=seatNumber+seat.get(x);
+                    System.out.println(name);
+                    }
+                    else{
+                        String seatNumber=Integer.toString(x)+" ";
+                        String name=seat.get(x);
+                        System.out.println(seatNumber+name);
+                    }
+            }
+            else{
+                //break;
+            }
     } 
 }
+}
+
